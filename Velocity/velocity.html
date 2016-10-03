@@ -1,0 +1,98 @@
+
+<html>
+<head>
+    <title>Velocity Block</title>
+</head>
+<body>
+<style>
+    #myCanvas {
+        border: 1px solid;
+    }
+    img {
+        display: none;
+    }
+</style>  
+    <img id="character" src="https://www.gohealthinsurance.com/media/nvx/assets/gh/styles/images/inner-pages/workplace/runningMan.png"/>
+<canvas id="myCanvas" width = "1310" height="500"></canvas>
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+
+var block = {
+  xPos: 5,
+  yPos: c.height/2,
+  width: 50,
+  height: 50,  
+  goLeft: false,
+  goRight: false,
+  goDown: false,
+  goUp: false,
+  yVel:0,
+  xVel:0,
+  draw: function() {
+    ctx.fillStyle = "Red";
+    ctx.fillRect(this.xPos,this.yPos,this.width,this.height);
+  },
+
+  move: function() {     
+
+    if(this.goRight && block.xPos < 1300) this.xVel++;
+    if(this.goLeft && block.xPos > 20) this.xVel--;
+    if(this.goUp && block.yPos > 20 && this.yPos == 470) this.yVel-=10;
+    this.xPos += this.xVel;
+    this.yPos += this.yVel;
+    this.xVel*=0.8;
+    if(this.yPos < 470) this.yVel+=0.5;
+    else if(this.yVel > 0) this.yVel = 0;
+    if(this.yPos > 470) this.yPos = 470;    
+  },
+};
+
+
+
+document.addEventListener("keydown", function(evt) {
+  if(evt.keyCode === 37) {
+    block.goLeft = true;
+  }  
+    
+  if(evt.keyCode === 32) {
+    block.goUp = true;   
+  }
+    
+  if(evt.keyCode === 39) {
+    block.goRight = true;
+  }  
+    
+});
+
+document.addEventListener("keyup", function(evt) {
+  if(evt.keyCode === 37) {
+    block.goLeft = false;
+  }  
+    
+  if(evt.keyCode === 32) {
+    block.goUp = false;
+  }
+    
+  if(evt.keyCode === 39) {
+    block.goRight = false;
+  } 
+    
+});
+
+
+function gameLoop() {  
+  ctx.beginPath();
+  ctx.clearRect(0, 0, c.width, c.height);
+    
+  block.draw();
+  block.move();
+  
+  window.requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+
+
+<html>
+<head>
+    <title>Stars</title>
+</head>
+    <style>
+        #myCanvas {
+            border: 1px solid;
+            background-color: #FFF;
+        }
+    </style>
+<body>
+<canvas id="myCanvas" width="1310" height="630" style="background-color:black"></canvas>
+<script>
+    
+var gameScreen = document.getElementById("myCanvas");
+var ctx = gameScreen.getContext("2d");
+//Draw Characters   
+    
+//Draw Random Boxes      
+function Circle() {
+    this.xPos = Math.random()*gameScreen.width;
+    this.yPos = Math.random()*gameScreen.height;
+    this.color = "rgb("+Math.floor(Math.random()*5)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
+        
+    this.draw = function() {
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.xPos, this.yPos, 30*Math.random(),0,2*Math.PI);
+        ctx.fill();
+    }
+}
+var circles = [];    
+    
+    
+function gameLoop() {
+
+    ctx.beginPath();
+    ctx.clearRect(0, 0, gameScreen.width, gameScreen.height);
+   
+    for(i = 0; i < circles.length; i++) {
+        circles[i].draw();
+    }
+       
+        circles.push(new Circle());                
+    
+    window.requestAnimationFrame(gameLoop);
+}   
+    window.requestAnimationFrame(gameLoop);
+    
+</script>    
+</body>
+</html>

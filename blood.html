@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>Kill</title>
+</head>
+<body>
+<script>
+var canvas = document.createElement("canvas");
+var ctx = canvas.getContext("2d");
+canvas.style.position = "absolute";
+canvas.style.left = 0;
+canvas.style.top = 0;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+canvas.style.width = window.innerWidth + "px";
+canvas.style.height = window.innerHeight + "px";
+canvas.style.backgroundColor = "white";
+document.body.appendChild(canvas);
+
+function paintDrop(){
+    this.x = Math.random()*canvas.width;
+    this.y = 0;
+    this.update = function() {
+        this.y++;
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,2+5*Math.random(),0,2*Math.PI);
+        ctx.fillStyle = "#A70000";
+        ctx.fill();
+    }
+}
+
+var paint = [];
+    
+document.addEventListener("keydown", function(e){
+    if(e.keyCode === 32) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+})
+
+function gameLoop() {
+    if(Math.random())paint.push(new paintDrop());
+    for(i = 0; i < paint.length; i++){
+        paint[i].update();
+    }
+    
+    ctx.beginPath();
+    ctx.font="200px sans-hef";
+    ctx.fillStyle = "white"
+    ctx.fillText("Beware",canvas.width / 2 - 328, canvas.height/2 + 50);
+    
+    window.requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+  
+</script>    
+</body>
+</html>

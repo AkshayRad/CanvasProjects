@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Block Maze</title>
+</head>
+<body>
+<script>
+var gameScreen = document.createElement("canvas");
+
+gameScreen.style.position = "absolute";
+gameScreen.style.left = 0;
+gameScreen.style.top = 0;
+gameScreen.width = window.innerWidth;
+gameScreen.height = window.innerHeight;
+gameScreen.style.width = window.innerWidth + "px";
+gameScreen.style.height = window.innerHeight + "px";
+gameScreen.style.backgroundColor = "yellow";
+var ctx = gameScreen.getContext("2d");
+document.body.appendChild(gameScreen);
+   
+//Draw Characters   
+var character = {
+    xPos: gameScreen.width / 2,
+    yPos: gameScreen.height / 2,
+    width: 20,
+    height: 20,
+    dx:0,
+    dy:0,
+    finished: false,
+    died: false,
+    
+    draw: function() {
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
+    },
+    move: function() {
+        var up = 0;
+        var right = 0;
+        if(this.goUp && this.yPos > 0)up--;
+        if(this.goDown && this.yPos < gameScreen.height - this.height)up++;
+        if(this.goLeft && this.xPos > 0)right--;
+        if(this.goRight && this.xPos < gameScreen.width - this.width)right++;
+        
+        if(!(up == 0 && right == 0)){
+            var acel = 1;
+            var angle_acel = Math.atan2(up,right);
+            this.dx+=Math.cos(angle_acel)*acel;
+            this.dy+=Math.sin(angle_acel)*acel;    
+        }
+            if(this.xPos < finishLine.xPos + finishLine.width && this.xPos + this.width > finishLine.xPos && this.yPos < finishLine.yPos + finishLine.width && this.yPos + this.width > finishLine.yPos) {
+                character.finished = true;
+            }
+        for(i=0;i<boxes.length;i++) {
+            if(this.xPos < boxes[i].xPos + boxes[i].width && this.xPos + this.width > boxes[i].xPos && this.yPos < boxes[i].yPos + boxes[i].height && this.yPos + this.height > boxes[i].yPos) {
+                character.died = true;
+            }              
+        }     
+        this.xPos+=this.dx;
+        this.yPos+=this.dy;
+        
+        var angle = Math.atan2(this.dy,this.dx);
+        var vel = Math.sqrt(this.dx*this.dx+this.dy*this.dy);
+        vel*=0.8;
+        if(vel < 0.1)vel = 0;
+        this.dx = Math.cos(angle)*vel;
+        this.dy = Math.sin(angle)*vel;
+    },
+}
+    
+
+var finishLine = {
+    xPos: Math.random()*gameScreen.width,
+    yPos: Math.random()*gameScreen.height,
+    width: 30,
+    height: 30,
+    
+    draw: function() {
+        ctx.fillStyle = "red";
+        ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
+        ctx.stroke();
+    }
+}
+//Draw Random Boxes      
+function Box() {
+    this.width = 30;
+    this.height = 30;
+    this.xPos = Math.random()*gameScreen.width;
+    this.yPos = Math.random()*gameScreen.height;
+    
+    this.draw = function() {
+        ctx.rect(this.xPos, this.yPos, this.width, this.height);
+    }        
+}
+var boxes = [];    
+    
+
+document.addEventListener("keydown", function(e){
+    if(e.keyCode === 38) {
+        character.goUp = true;
+    }
+    if(e.keyCode === 40) {
+        character.goDown = true;
+    }
+    if(e.keyCode === 37) {
+        character.goLeft = true;
+    }
+    if(e.keyCode === 39) {
+        character.goRight = true;
+    }    
+})
+
+document.addEventListener("keyup", function(e){
+    if(e.keyCode === 38) {
+        character.goUp = false;
+    }
+    if(e.keyCode === 40) {
+        character.goDown = false;
+    }
+    if(e.keyCode === 37) {
+        character.goLeft = false;
+    }
+    if(e.keyCode === 39) {
+        character.goRight = false;
+    }    
+})
+    
+function gameLoop() {
+
+    ctx.beginPath();
+    ctx.clearRect(0, 0, gameScreen.width, gameScreen.height);
+
+    if (character.finished === false && character.died === false) {
+    //Draw main character
+    character.draw();
+    character.move();
+    
+    //Draw Finish line
+    finishLine.draw();
+   
+    //Draw boxes
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+        
+    for(i = 0; i < boxes.length; i++) {    
+        boxes[i].draw();
+    }
+        if(boxes.length > 100) {
+            
+        } else {
+            boxes.push(new Box());   
+        }
+    
+    ctx.fill();
+        
+    }
+    
+    if (character.finished === true) {
+        ctx.fillStyle = "#3CC41D";
+        ctx.fillRect(0, 0, 150, 100);
+        boxes = [];
+        Box();
+        
+        character.xPos = gameScreen.width / 2;
+        character.yPos = gameScreen.height / 2;
+            
+        finishLine.xPos = Math.random()*gameScreen.width;
+        finishLine.yPos = Math.random()*gameScreen.height;
+        
+        character.finished = false;
+    }
+    
+    if (character.died === true) {
+        ctx.fillStyle = "#ff0000";
+        ctx.fillRect(0, 0, 150, 100);
+        boxes = [];
+        Box();
+        
+        character.xPos = gameScreen.width / 2;
+        character.yPos = gameScreen.height / 2;
+        
+        character.died = false;
+    }
+        
+    window.requestAnimationFrame(gameLoop);
+}   
+    gameLoop();
+    
+</script>    
+</body>
+</html>
